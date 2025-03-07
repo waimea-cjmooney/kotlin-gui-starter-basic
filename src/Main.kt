@@ -28,11 +28,13 @@ fun main() {
  * Defines the UI and responds to events
  * The app model should be passed as an argument
  */
-class MainWindow : JFrame(), ActionListener {
+class MainWindow : JFrame(), ActionListener, KeyListener {
 
     // Fields to hold the UI elements
     private lateinit var greetingLabel: JLabel
+    private lateinit var nameBox: JTextField
     private lateinit var helloButton: JButton
+    private lateinit var byeButton: JButton
 
     /**
      * Configure the UI and display it
@@ -50,7 +52,7 @@ class MainWindow : JFrame(), ActionListener {
      */
     private fun configureWindow() {
         title = "Kotlin Swing GUI Demo"
-        contentPane.preferredSize = Dimension(600, 350)
+        contentPane.preferredSize = Dimension(600, 500)
         defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
         isResizable = false
         layout = null
@@ -70,13 +72,28 @@ class MainWindow : JFrame(), ActionListener {
         greetingLabel.font = defaultFont
         add(greetingLabel)
 
-        helloButton = JButton("Click Me!")
-        helloButton.bounds = Rectangle(50,200,500,100)
+        nameBox = JTextField()
+        nameBox.bounds = Rectangle(50, 150, 500, 100)
+        nameBox.font = defaultFont
+        nameBox.addActionListener(this)
+        nameBox.addKeyListener(this)
+        add(nameBox)
+
+        helloButton = JButton("Hello!")
+        helloButton.bounds = Rectangle(350,300,200,100)
         helloButton.foreground = Color.YELLOW
         helloButton.background = Color(0, 33, 66)
         helloButton.font = defaultFont
         helloButton.addActionListener(this)     // Handle any clicks
         add(helloButton)
+
+        byeButton = JButton("Goodbye!")
+        byeButton.bounds = Rectangle(50,300,200,100)
+        byeButton.foreground = Color.YELLOW
+        byeButton.background = Color(0, 33, 66)
+        byeButton.font = defaultFont
+        byeButton.addActionListener(this)     // Handle any clicks
+        add(byeButton)
     }
 
 
@@ -85,10 +102,35 @@ class MainWindow : JFrame(), ActionListener {
      */
     override fun actionPerformed(e: ActionEvent?) {
         when (e?.source) {
+            nameBox -> {
+                println("Name text changed")
+            }
             helloButton -> {
-                greetingLabel.text = "You clicked the button!"
+                println("Hello button pressed")
+                greetingLabel.text = "Hello there, ${ if (nameBox.text != "") nameBox.text else "Stranger"}!"
+            }
+            byeButton -> {
+                println("Hello button pressed")
+                greetingLabel.text = "Goodbye ${ if (nameBox.text != "") nameBox.text else "Stranger"}!"
             }
         }
+    }
+
+    override fun keyTyped(e: KeyEvent?) {
+        println("Key Typed: ${e?.keyChar}")
+    }
+
+    override fun keyPressed(e: KeyEvent?) {
+        println("Key Pressed: ${e?.keyCode}")
+        if (e?.keyCode in KeyEvent.VK_A .. KeyEvent.VK_Z) {
+            println("Letter key!")
+        } else {
+            e?.consume()
+        }
+    }
+
+    override fun keyReleased(e: KeyEvent?) {
+        println("Key Released: ${e?.keyCode}")
     }
 
 }
